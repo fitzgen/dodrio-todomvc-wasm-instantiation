@@ -13,9 +13,68 @@
         <footer class="info">
             <p>Double-click to edit a todo</p>
         </footer>
+        <script>
+         const NATIVE_CODE = "function instantiateStreaming() {\n    [native code]\n}";
+
+         const query = window.location.search;
+
+         if (query === "?forceEnableInstantiateStreaming") {
+             console.log("Force enabling WebAssembly.instantiateStreaming");
+             const { instantiateStreaming } = WebAssembly;
+             if (typeof instantiateStreaming !== "function"
+                 || instantiateStreaming.toString() !== NATIVE_CODE) {
+                 throw new Error("WebAssembly.instantiateStreaming is not available");
+             }
+             WebAssembly.instantiateStreaming = function (response, imports) {
+                 return instantiateStreaming(response, imports)
+                     .then(x => {
+                         console.log(
+                             `Instantiated via WebAssembly.instantiateStreaming in ${window.performance.now()} ms`
+                         );
+                         return x;
+                     }).catch(e => {
+                         console.error(`Instantiating with WebAssembly.instantiateStreaming failed: ${e}`);
+                         throw e;
+                     });
+             };
+         } else if (query === "?forceDisableInstantiateStreaming") {
+             console.log("Force disabling WebAssembly.instantiateStreaming");
+             const { instantiate } = WebAssembly;
+             WebAssembly.instantiateStreaming = function (response, imports) {
+                 return response
+                     .then(r => r.arrayBuffer())
+                     .then(bytes => {
+                         console.log(`finished fetching at ${window.performance.now()} ms`);
+                         return instantiate(bytes, imports)
+                     })
+                     .then(x => {
+                         console.log(`Instantiated via fetch and then WebAssembly.instantiate in ${window.performance.now()} ms`);
+                         return x;
+                     }).catch(e => {
+                         console.error(`Instantiating with fetch and then WebAssembly.instantiate failed: ${e}`);
+                         throw e;
+                     });
+             };
+         } else {
+             console.log("Neither force enabling nor force disabling WebAssembly.instantiateStreaming; using default behavior.");
+         }
+
+         WebAssembly.instantiate = function () {
+             throw new Error("Should not attempt to use WebAssembly.instantiate");
+         };
+        </script>
         <script src="pkg/dodrio_todomvc.js"></script>
         <script>
-         wasm_bindgen("pkg/dodrio_todomvc_bg.wasm");
+         const { run } = wasm_bindgen;
+         (async function() {
+             const start = window.performance.now();
+             console.log(`Started fetch at ${start} ms`);
+             await wasm_bindgen("pkg/dodrio_todomvc_bg.wasm");
+             run();
+             const end = window.performance.now();
+             console.log(`Finished first render at ${end} ms`);
+             console.log(`Total fetch to render time = ${end - start} ms`);
+         }());
         </script>
     </body>
 </html>

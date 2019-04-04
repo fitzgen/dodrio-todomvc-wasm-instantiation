@@ -16,10 +16,7 @@ use dodrio::Vdom;
 use wasm_bindgen::prelude::*;
 
 /// Run the TodoMVC app!
-///
-/// Since this is marked `#[wasm_bindgen(start)]` it is automatically invoked
-/// once the wasm module instantiated on the Web page.
-#[wasm_bindgen(start)]
+#[wasm_bindgen]
 pub fn run() -> Result<(), JsValue> {
     // Set up the logging for debugging if/when things go wrong.
     init_logging();

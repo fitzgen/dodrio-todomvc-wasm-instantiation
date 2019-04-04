@@ -1,0 +1,14 @@
+{
+  "name": "dodrio-todomvc",
+  "collaborators": [
+    "Nick Fitzgerald <fitzgen@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "dodrio_todomvc_bg.wasm",
+    "dodrio_todomvc.js",
+    "dodrio_todomvc.d.ts"
+  ],
+  "browser": "dodrio_todomvc.js",
+  "types": "dodrio_todomvc.d.ts"
+}
