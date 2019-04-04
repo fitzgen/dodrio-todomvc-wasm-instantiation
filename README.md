@@ -21,7 +21,7 @@ To force disable pipelining and *not* use `instantiateStreaming`, add this query
 string to the URL: `?forceDisableInstantiateStreaming`. [Alternatively, click
 this link to view the `gh-pages` hosted version of this demo with pipelining
 force
-disabled.](https://fitzgen.github.io/dodrio-todomvc-wasm-instantiation/?forceEnableInstantiateStreaming)
+disabled.](https://fitzgen.github.io/dodrio-todomvc-wasm-instantiation/?forceDisableInstantiateStreaming)
 
 Timing information will be logged to the devtools console.
 
